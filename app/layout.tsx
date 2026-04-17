@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { AnalyticsProvider } from "@/components/providers/AnalyticsProvider";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,14 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0A0A0F] min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <AnalyticsProvider>
-          {children}
-          <Analytics />
-        </AnalyticsProvider>
+        <ThemeProvider>
+          <AnalyticsProvider>
+            {children}
+            <Analytics />
+          </AnalyticsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

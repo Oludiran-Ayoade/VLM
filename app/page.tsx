@@ -17,9 +17,9 @@ export default function Home() {
   const selectedPair = useAnalyzerStore((s) => s.selectedPair);
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
       {/* Background gradient */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/[0.02] via-transparent to-transparent pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/[0.02] dark:from-white/[0.02] via-transparent to-transparent pointer-events-none" />
       
       <Navbar />
       <LoadingOverlay />
@@ -31,17 +31,17 @@ export default function Home() {
           <div className="flex flex-col items-center gap-16">
             {/* Hero */}
             <div className="text-center space-y-6 max-w-3xl pt-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 mb-4">
                 <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                <span className="text-xs text-white/60 font-medium tracking-wide">
+                <span className="text-xs text-black/60 dark:text-white/60 font-medium tracking-wide">
                   INSTITUTIONAL-GRADE ANALYSIS
                 </span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-black dark:text-white tracking-tight leading-[1.1]">
                 Multi-Timeframe
-                <span className="block text-white/40">Chart Analysis</span>
+                <span className="block text-black/40 dark:text-white/40">Chart Analysis</span>
               </h1>
-              <p className="text-white/50 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+              <p className="text-black/50 dark:text-white/50 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
                 Upload your 1D, 1H, and 5M charts. Our AI analyzes confluence 
                 across timeframes to deliver probabilistic trade signals.
               </p>

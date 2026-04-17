@@ -1,5 +1,7 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+
 export function Navbar() {
   return (
     <nav className="w-full border-b border-white/5 bg-black/80 backdrop-blur-xl sticky top-0 z-50">
@@ -27,6 +29,7 @@ export function Navbar() {
               Claude Vision
             </span>
           </div>
+          <ThemeToggle />
         </div>
       </div>
     </nav>
