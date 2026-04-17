@@ -219,6 +219,18 @@ export async function POST(request: NextRequest) {
     const message =
       err instanceof Error ? err.message : "Unknown error occurred";
 
+    // Check for API key issues
+    if (message.includes("401") || message.includes("authentication") || message.includes("API key")) {
+      return Response.json(
+        {
+          success: false,
+          error: "API authentication failed. Please check your Anthropic API key is correctly set in environment variables.",
+          raw: message,
+        } satisfies AnalyzeResponse,
+        { status: 500 }
+      );
+    }
+
     if (message.includes("timeout") || message.includes("ETIMEDOUT")) {
       return Response.json(
         {
@@ -230,10 +242,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Return detailed error for debugging
     return Response.json(
       {
         success: false,
-        error: "Internal server error during analysis. Please try again.",
+        error: `Analysis failed: ${message}`,
+        raw: err instanceof Error ? err.stack : String(err),
       } satisfies AnalyzeResponse,
       { status: 500 }
     );
