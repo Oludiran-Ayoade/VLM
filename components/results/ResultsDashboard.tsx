@@ -2,6 +2,7 @@
 
 import { useAnalyzerStore } from "@/store/analyzerStore";
 import { ProbabilityGauge } from "./ProbabilityGauge";
+import { TradeSetup } from "./TradeSetup";
 import { TimeframeCard } from "./TimeframeCard";
 import { RationaleSection } from "./RationaleSection";
 import { SupportResistance } from "./SupportResistance";
@@ -37,6 +38,14 @@ export function ResultsDashboard() {
           direction={result.direction}
         />
       </div>
+
+      {/* Divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+      {/* Trade Setup - Entry, SL, TP */}
+      {result.trade_setup && (
+        <TradeSetup setup={result.trade_setup} direction={result.direction} />
+      )}
 
       {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />

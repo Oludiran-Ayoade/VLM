@@ -9,6 +9,22 @@ export interface KeyLevels {
   support: string[];
 }
 
+export type OrderType = "Buy Limit" | "Sell Limit" | "Buy Stop" | "Sell Stop" | "Market Buy" | "Market Sell";
+
+export interface TradeSetup {
+  order_type: OrderType;
+  entry_price: string;
+  stop_loss: string;
+  take_profit_1: string;
+  take_profit_2: string;
+  take_profit_3: string;
+  risk_reward_ratio: string;
+  position_size_recommendation: string;
+  entry_reasoning: string;
+  sl_reasoning: string;
+  tp_reasoning: string;
+}
+
 export interface AnalysisResult {
   direction: Direction;
   probability: number;
@@ -18,6 +34,7 @@ export interface AnalysisResult {
   entry_analysis: string;
   decision_rationale: string;
   key_levels: KeyLevels;
+  trade_setup: TradeSetup;
   invalidation_condition: string;
   risk_warning: string;
 }

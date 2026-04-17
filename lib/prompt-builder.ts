@@ -106,14 +106,49 @@ Write as if briefing a hedge fund trading desk. Connect ALL dots:
 • What is the "trap" being set for retail traders?
 • Example: "Daily shows bearish structure with price in premium. 1H swept BSL above equal highs and is now rejecting from a bearish OB. 5M shows displacement down with MSS confirmed. Smart Money likely accumulated shorts above the highs and will drive price to SSL at [level]. Retail longs are trapped."
 
+**STEP 6 — TRADE SETUP (Actionable Entry Parameters)**
+┌─────────────────────────────────────────────────────────────┐
+│ ENTRY PRICE DETERMINATION:                                  │
+│ • For pending orders: Use OTE zone (62-79% Fib), OB edge,   │
+│   or FVG midpoint as entry level                            │
+│ • For market orders: Current price if confirmation present  │
+│ • Always specify the exact price or relative level          │
+│                                                             │
+│ STOP LOSS PLACEMENT (Institutional Method):                 │
+│ • Place SL beyond the structure that validates the trade    │
+│ • Bullish: Below the OB low or swing low + buffer           │
+│ • Bearish: Above the OB high or swing high + buffer         │
+│ • Buffer: Add 5-10 pips for spread/slippage                 │
+│ • SL should be at a level where "if hit, the setup is dead" │
+│                                                             │
+│ TAKE PROFIT LEVELS (Scaled Exit Strategy):                  │
+│ • TP1 (50% position): Nearest liquidity pool or FVG         │
+│ • TP2 (30% position): Next major S/R or opposing OB         │
+│ • TP3 (20% position): Full target (opposing liquidity pool) │
+│ • Each TP should have logical structural reasoning          │
+│                                                             │
+│ RISK:REWARD CALCULATION:                                    │
+│ • Minimum acceptable: 1:2                                   │
+│ • Ideal: 1:3 or better                                      │
+│ • If R:R < 1:2, recommend NO TRADE                          │
+│                                                             │
+│ ORDER TYPE SELECTION:                                       │
+│ • Buy Limit: Expecting pullback to entry (bullish)          │
+│ • Sell Limit: Expecting pullback to entry (bearish)         │
+│ • Buy Stop: Breakout entry above resistance                 │
+│ • Sell Stop: Breakdown entry below support                  │
+│ • Market Buy/Sell: Immediate entry with confirmation        │
+└─────────────────────────────────────────────────────────────┘
+
 ═══════════════════════════════════════════════════════════════
 OUTPUT REQUIREMENTS
 ═══════════════════════════════════════════════════════════════
 
 • Return ONLY valid JSON. No markdown, no extra text.
-• If price levels are unreadable, use relative terms ("recent swing high", "prior week low").
+• If exact price levels are unreadable, use relative terms ("recent swing high at approximately X", "OB zone around X") but ALWAYS attempt to provide specific levels when visible.
 • Note any chart quality issues in the relevant analysis field.
 • Be specific about WHY, not just WHAT you see.
+• CRITICAL: The trade_setup must be actionable — a trader should be able to place the order directly from your output.
 
 **JSON SCHEMA:**
 {
@@ -128,7 +163,20 @@ OUTPUT REQUIREMENTS
     "resistance": ["<level/description>", ...],
     "support": ["<level/description>", ...]
   },
-  "invalidation_condition": "<Specific price action that kills the setup — e.g., 'Break and close above the 1H bearish OB'>",
+  "trade_setup": {
+    "order_type": "Buy Limit" | "Sell Limit" | "Buy Stop" | "Sell Stop" | "Market Buy" | "Market Sell",
+    "entry_price": "<exact price or 'X.XXXX (OTE zone)' or 'At market ~X.XXXX'>",
+    "stop_loss": "<exact price with pips from entry, e.g., '1.0865 (17 pips)'>",
+    "take_profit_1": "<price and pips, e.g., '1.0810 (38 pips) — 50% position'>",
+    "take_profit_2": "<price and pips, e.g., '1.0780 (68 pips) — 30% position'>",
+    "take_profit_3": "<price and pips, e.g., '1.0750 (98 pips) — 20% position'>",
+    "risk_reward_ratio": "<e.g., '1:2.2 to TP1, 1:4 to TP2, 1:5.8 to TP3'>",
+    "position_size_recommendation": "<e.g., '1-2% risk per trade, scale in if price reaches OTE'>",
+    "entry_reasoning": "<Why this specific entry level — OB, FVG, OTE, etc.>",
+    "sl_reasoning": "<Why SL is placed here — what structure invalidates the setup>",
+    "tp_reasoning": "<Why these TP levels — what liquidity/structure will be targeted>"
+  },
+  "invalidation_condition": "<Specific price action that kills the setup — e.g., 'Break and close above the 1H bearish OB at X.XXXX'>",
   "risk_warning": "<Specific risks: news events, session timing, conflicting signals, low liquidity periods>"
 }`;
 }
