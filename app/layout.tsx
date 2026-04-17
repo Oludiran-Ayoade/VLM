@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
+import { AnalyticsProvider } from "@/components/providers/AnalyticsProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Forex Visual Analyzer — AI Chart Analysis",
+  title: "Forex Visual Analyzer — AI-Powered Multi-Timeframe Analysis",
   description:
-    "Upload Forex chart screenshots across multiple timeframes and get institutional-quality AI technical analysis with probabilistic forecasts.",
+    "Institutional-grade Forex chart analysis using Claude Vision. Upload 1D, 1H, and 5M charts for probabilistic forecasts with entry, stop loss, and take profit levels.",
 };
 
 export default function RootLayout({
@@ -24,12 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-[#0A0A0F]">
-        {children}
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0A0A0F] min-h-screen flex flex-col`}
+      >
+        <AnalyticsProvider>
+          {children}
+          <Analytics />
+        </AnalyticsProvider>
       </body>
     </html>
   );

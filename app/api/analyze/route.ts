@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { getAnthropicClient } from "@/lib/anthropic";
 import { buildSystemPrompt, buildUserPrompt } from "@/lib/prompt-builder";
 import { isValidPair } from "@/lib/forex-pairs";
+import { checkNewsCalendar } from "@/lib/news-calendar";
 import type { AnalysisResult, AnalyzeResponse } from "@/types/analysis";
 
 const MAX_BASE64_SIZE = 5 * 1024 * 1024 * 1.37; // ~6.85MB after base64 encoding of 5MB
@@ -53,6 +55,26 @@ export async function POST(request: NextRequest) {
         } satisfies AnalyzeResponse,
         { status: 400 }
       );
+    }
+
+    // Check news calendar for high-impact events
+    try {
+      const newsCheck = await checkNewsCalendar(pair);
+      if (newsCheck.hasHighImpactNews) {
+        Sentry.captureMessage(`Analysis blocked due to high-impact news: ${pair}`, 'info');
+        return Response.json(
+          {
+            success: false,
+            error: newsCheck.warningMessage || "High-impact news event detected. Trading not recommended during this period.",
+            raw: JSON.stringify(newsCheck.upcomingEvents, null, 2),
+          } satisfies AnalyzeResponse,
+          { status: 400 }
+        );
+      }
+    } catch (newsError) {
+      // Log but don't block analysis if news check fails
+      Sentry.captureException(newsError);
+      console.warn("News calendar check failed, proceeding with analysis:", newsError);
     }
 
     // Validate images
@@ -192,6 +214,7 @@ export async function POST(request: NextRequest) {
     } satisfies AnalyzeResponse);
   } catch (err) {
     console.error("Analysis API error:", err);
+    Sentry.captureException(err);
 
     const message =
       err instanceof Error ? err.message : "Unknown error occurred";
