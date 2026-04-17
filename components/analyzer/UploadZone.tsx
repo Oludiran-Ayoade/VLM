@@ -53,27 +53,27 @@ export function UploadZone({ config }: UploadZoneProps) {
   if (image) {
     return (
       <div className="relative group">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden backdrop-blur-sm">
-          <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+        <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.02] overflow-hidden backdrop-blur-sm">
+          <div className="px-4 py-3 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-black/[0.02] dark:bg-white/[0.02]">
             <div className="flex items-center gap-3">
               <span className="text-lg">{config.icon}</span>
               <div>
-                <span className="text-sm font-medium text-white">
+                <span className="text-sm font-medium text-black dark:text-white">
                   {config.label}
                 </span>
-                <span className="text-xs text-white/40 ml-2">
+                <span className="text-xs text-black/40 dark:text-white/40 ml-2">
                   {config.description}
                 </span>
               </div>
             </div>
             <button
               onClick={removeImage}
-              className="text-xs text-white/40 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5"
+              className="text-xs text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
             >
               Remove
             </button>
           </div>
-          <div className="relative aspect-video bg-black/20">
+          <div className="relative aspect-video bg-gray-100 dark:bg-black/20">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image.preview}
@@ -106,8 +106,8 @@ export function UploadZone({ config }: UploadZoneProps) {
           group
           ${
             isDragging
-              ? "border-white/40 bg-white/[0.05] scale-[1.02]"
-              : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
+              ? "border-black/40 dark:border-white/40 bg-black/[0.05] dark:bg-white/[0.05] scale-[1.02]"
+              : "border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.02] hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
           }
           ${isUploading ? "opacity-50 pointer-events-none" : ""}
         `}
@@ -125,15 +125,15 @@ export function UploadZone({ config }: UploadZoneProps) {
           <span className="text-4xl group-hover:scale-110 transition-transform duration-300 block">
             {config.icon}
           </span>
-          <div className="absolute inset-0 bg-white/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-black/10 dark:bg-white/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
         
         <div className="text-center space-y-1">
-          <p className="text-sm font-semibold text-white">{config.label}</p>
-          <p className="text-xs text-white/40">{config.description}</p>
+          <p className="text-sm font-semibold text-black dark:text-white">{config.label}</p>
+          <p className="text-xs text-black/40 dark:text-white/40">{config.description}</p>
         </div>
         
-        <div className="flex items-center gap-2 text-xs text-white/30">
+        <div className="flex items-center gap-2 text-xs text-black/30 dark:text-white/30">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>

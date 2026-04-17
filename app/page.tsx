@@ -52,14 +52,14 @@ export default function Home() {
               {/* Step 1: Pair Selection */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white text-black text-sm font-bold flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-bold flex items-center justify-center">
                     1
                   </div>
                   <div>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm font-semibold text-black dark:text-white">
                       Select Currency Pair
                     </span>
-                    <p className="text-xs text-white/40">Choose from majors, minors, or exotics</p>
+                    <p className="text-xs text-black/50 dark:text-white/40">Choose from majors, minors, or exotics</p>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -71,14 +71,14 @@ export default function Home() {
               {/* Step 2: Upload Charts */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white text-black text-sm font-bold flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-bold flex items-center justify-center">
                     2
                   </div>
                   <div>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm font-semibold text-black dark:text-white">
                       Upload Chart Screenshots
                     </span>
-                    <p className="text-xs text-white/40">Three timeframes for confluence analysis</p>
+                    <p className="text-xs text-black/50 dark:text-white/40">Three timeframes for confluence analysis</p>
                   </div>
                 </div>
                 <UploadPanel />
@@ -87,10 +87,10 @@ export default function Home() {
               {/* Step 3: Analyze */}
               <div className="flex flex-col items-center gap-6 pt-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white text-black text-sm font-bold flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-bold flex items-center justify-center">
                     3
                   </div>
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-sm font-semibold text-black dark:text-white">
                     Generate Analysis
                   </span>
                 </div>
@@ -109,16 +109,16 @@ export default function Home() {
                     <h3 className="text-base font-semibold text-red-400">
                       Analysis Failed
                     </h3>
-                    <p className="text-sm text-white/60">{error}</p>
+                    <p className="text-sm text-black/60 dark:text-white/60">{error}</p>
                   </div>
                 </div>
 
                 {rawResponse && (
                   <details className="mt-3">
-                    <summary className="text-xs text-white/40 cursor-pointer hover:text-white/60 transition-colors">
+                    <summary className="text-xs text-black/40 dark:text-white/40 cursor-pointer hover:text-black/60 dark:hover:text-white/60 transition-colors">
                       View raw AI response
                     </summary>
-                    <pre className="mt-2 p-4 rounded-xl bg-black/50 text-xs text-white/40 overflow-x-auto max-h-60 overflow-y-auto whitespace-pre-wrap border border-white/5">
+                    <pre className="mt-2 p-4 rounded-xl bg-black/10 dark:bg-black/50 text-xs text-black/60 dark:text-white/40 overflow-x-auto max-h-60 overflow-y-auto whitespace-pre-wrap border border-black/10 dark:border-white/5">
                       {rawResponse}
                     </pre>
                   </details>
@@ -126,7 +126,7 @@ export default function Home() {
 
                 <button
                   onClick={reset}
-                  className="text-sm text-white hover:text-white/80 transition-colors underline underline-offset-4"
+                  className="text-sm text-black dark:text-white hover:text-black/80 dark:hover:text-white/80 transition-colors underline underline-offset-4"
                 >
                   Try again
                 </button>
@@ -137,17 +137,17 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="relative w-full border-t border-white/5 py-6 mt-auto">
+      <footer className="relative w-full border-t border-black/10 dark:border-white/5 py-6 mt-auto">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/30">
+          <p className="text-xs text-black/40 dark:text-white/30">
             Forex Visual Analyzer — Not financial advice
           </p>
           <div className="flex items-center gap-6">
-            <p className="text-xs text-white/30">
+            <p className="text-xs text-black/40 dark:text-white/30">
               Powered by Claude Vision
             </p>
-            <div className="h-3 w-px bg-white/10" />
-            <p className="text-xs text-white/30">
+            <div className="h-3 w-px bg-black/10 dark:bg-white/10" />
+            <p className="text-xs text-black/40 dark:text-white/30">
               © 2024
             </p>
           </div>

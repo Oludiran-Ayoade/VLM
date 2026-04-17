@@ -15,7 +15,7 @@ export function AnalyzeButton() {
     <div className="relative group">
       {/* Glow effect */}
       {!isDisabled && !isLoading && (
-        <div className="absolute -inset-1 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute -inset-1 bg-black/20 dark:bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       )}
       
       <button
@@ -26,8 +26,8 @@ export function AnalyzeButton() {
           transition-all duration-300 overflow-hidden
           ${
             isDisabled
-              ? "bg-white/5 text-white/30 cursor-not-allowed border border-white/5"
-              : "bg-white text-black hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-white/10"
+              ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-white/30 cursor-not-allowed border border-gray-200 dark:border-white/5"
+              : "bg-black dark:bg-white text-white dark:text-black hover:bg-black/90 dark:hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10 dark:shadow-white/10"
           }
         `}
       >
