@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
-import { getOpenAIClient } from "@/lib/openai";
+import { getAnthropicClient } from "@/lib/anthropic";
 import { buildSystemPrompt, buildUserPrompt } from "@/lib/prompt-builder";
 import { isValidPair } from "@/lib/forex-pairs";
 import { checkNewsCalendar } from "@/lib/news-calendar";
@@ -101,37 +101,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Call OpenAI GPT-4 Vision
-    const client = getOpenAIClient();
+    // Call Anthropic Claude
+    const client = getAnthropicClient();
     const systemPrompt = buildSystemPrompt(pair);
     const userPrompt = buildUserPrompt(pair);
 
-    const labels = ["1-Day (Daily)", "1-Hour", "5-Minute"];
-    const imageMessages = images.map((b64, idx) => ({
-      type: "image_url" as const,
-      image_url: {
-        url: `data:${detectMediaType(b64)};base64,${b64}`,
-        detail: "high" as const,
-      },
-    }));
-
-    const response = await client.chat.completions.create({
-      model: "gpt-4-vision-preview",
-      max_tokens: 4096,
-      messages: [
+    const imageContents = images.map((b64, idx) => {
+      const labels = ["1-Day (Daily)", "1-Hour", "5-Minute"];
+      return [
         {
-          role: "system",
-          content: systemPrompt,
+          type: "text" as const,
+          text: `${labels[idx]} chart:`,
         },
+        {
+          type: "image" as const,
+          source: {
+            type: "base64" as const,
+            media_type: detectMediaType(b64),
+            data: b64,
+          },
+        },
+      ];
+    });
+
+    const response = await client.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages: [
         {
           role: "user",
           content: [
-            { type: "text", text: labels[0] + " chart:" },
-            imageMessages[0],
-            { type: "text", text: labels[1] + " chart:" },
-            imageMessages[1],
-            { type: "text", text: labels[2] + " chart:" },
-            imageMessages[2],
+            ...imageContents.flat(),
             { type: "text", text: userPrompt },
           ],
         },
@@ -139,8 +140,8 @@ export async function POST(request: NextRequest) {
     });
 
     // Extract text response
-    const message = response.choices[0]?.message;
-    if (!message || !message.content) {
+    const textBlock = response.content.find((block) => block.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
       return Response.json(
         {
           success: false,
@@ -150,7 +151,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const rawText = message.content.trim();
+    const rawText = textBlock.text.trim();
 
     // Parse JSON from response
     let analysisData: AnalysisResult;
