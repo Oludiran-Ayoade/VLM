@@ -1,65 +1,153 @@
-import Image from "next/image";
+"use client";
+
+import { Navbar } from "@/components/navbar/Navbar";
+import { PairSelector } from "@/components/analyzer/PairSelector";
+import { UploadPanel } from "@/components/analyzer/UploadPanel";
+import { AnalyzeButton } from "@/components/analyzer/AnalyzeButton";
+import { LoadingOverlay } from "@/components/analyzer/LoadingOverlay";
+import { ResultsDashboard } from "@/components/results/ResultsDashboard";
+import { useAnalyzerStore } from "@/store/analyzerStore";
 
 export default function Home() {
+  const phase = useAnalyzerStore((s) => s.phase) as string;
+  const error = useAnalyzerStore((s) => s.error);
+  const rawResponse = useAnalyzerStore((s) => s.rawResponse);
+  const reset = useAnalyzerStore((s) => s.reset);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-black">
+      {/* Background gradient */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/[0.02] via-transparent to-transparent pointer-events-none" />
+      
+      <Navbar />
+      <LoadingOverlay />
+      
+      <main className="relative flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {phase === "results" ? (
+          <ResultsDashboard />
+        ) : (
+          <div className="flex flex-col items-center gap-16">
+            {/* Hero */}
+            <div className="text-center space-y-6 max-w-3xl pt-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-4">
+                <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="text-xs text-white/60 font-medium tracking-wide">
+                  INSTITUTIONAL-GRADE ANALYSIS
+                </span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1]">
+                Multi-Timeframe
+                <span className="block text-white/40">Chart Analysis</span>
+              </h1>
+              <p className="text-white/50 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+                Upload your 1D, 1H, and 5M charts. Our AI analyzes confluence 
+                across timeframes to deliver probabilistic trade signals.
+              </p>
+            </div>
+
+            {/* Steps Container */}
+            <div className="w-full max-w-4xl space-y-12">
+              {/* Step 1: Pair Selection */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white text-black text-sm font-bold flex items-center justify-center">
+                    1
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold text-white">
+                      Select Currency Pair
+                    </span>
+                    <p className="text-xs text-white/40">Choose from majors, minors, or exotics</p>
+                  </div>
+                </div>
+                <PairSelector />
+              </div>
+
+              {/* Step 2: Upload Charts */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white text-black text-sm font-bold flex items-center justify-center">
+                    2
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold text-white">
+                      Upload Chart Screenshots
+                    </span>
+                    <p className="text-xs text-white/40">Three timeframes for confluence analysis</p>
+                  </div>
+                </div>
+                <UploadPanel />
+              </div>
+
+              {/* Step 3: Analyze */}
+              <div className="flex flex-col items-center gap-6 pt-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white text-black text-sm font-bold flex items-center justify-center">
+                    3
+                  </div>
+                  <span className="text-sm font-semibold text-white">
+                    Generate Analysis
+                  </span>
+                </div>
+                <AnalyzeButton />
+              </div>
+            </div>
+
+            {/* Error State */}
+            {phase === "error" && error && (
+              <div className="w-full max-w-4xl rounded-2xl border border-red-500/20 bg-red-500/5 p-6 space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                    <span className="text-lg">✕</span>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-base font-semibold text-red-400">
+                      Analysis Failed
+                    </h3>
+                    <p className="text-sm text-white/60">{error}</p>
+                  </div>
+                </div>
+
+                {rawResponse && (
+                  <details className="mt-3">
+                    <summary className="text-xs text-white/40 cursor-pointer hover:text-white/60 transition-colors">
+                      View raw AI response
+                    </summary>
+                    <pre className="mt-2 p-4 rounded-xl bg-black/50 text-xs text-white/40 overflow-x-auto max-h-60 overflow-y-auto whitespace-pre-wrap border border-white/5">
+                      {rawResponse}
+                    </pre>
+                  </details>
+                )}
+
+                <button
+                  onClick={reset}
+                  className="text-sm text-white hover:text-white/80 transition-colors underline underline-offset-4"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </main>
+
+      {/* Footer */}
+      <footer className="relative w-full border-t border-white/5 py-6 mt-auto">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-white/30">
+            Forex Visual Analyzer — Not financial advice
+          </p>
+          <div className="flex items-center gap-6">
+            <p className="text-xs text-white/30">
+              Powered by Claude Vision
+            </p>
+            <div className="h-3 w-px bg-white/10" />
+            <p className="text-xs text-white/30">
+              © 2024
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
