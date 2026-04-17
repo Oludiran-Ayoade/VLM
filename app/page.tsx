@@ -2,6 +2,7 @@
 
 import { Navbar } from "@/components/navbar/Navbar";
 import { PairSelector } from "@/components/analyzer/PairSelector";
+import { LivePrice } from "@/components/analyzer/LivePrice";
 import { UploadPanel } from "@/components/analyzer/UploadPanel";
 import { AnalyzeButton } from "@/components/analyzer/AnalyzeButton";
 import { LoadingOverlay } from "@/components/analyzer/LoadingOverlay";
@@ -13,6 +14,7 @@ export default function Home() {
   const error = useAnalyzerStore((s) => s.error);
   const rawResponse = useAnalyzerStore((s) => s.rawResponse);
   const reset = useAnalyzerStore((s) => s.reset);
+  const selectedPair = useAnalyzerStore((s) => s.selectedPair);
 
   return (
     <div className="min-h-screen bg-black">
@@ -60,7 +62,10 @@ export default function Home() {
                     <p className="text-xs text-white/40">Choose from majors, minors, or exotics</p>
                   </div>
                 </div>
-                <PairSelector />
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <PairSelector />
+                  <LivePrice pair={selectedPair} />
+                </div>
               </div>
 
               {/* Step 2: Upload Charts */}
