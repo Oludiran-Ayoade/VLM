@@ -32,12 +32,15 @@ function detectMediaType(
 }
 
 export async function POST(request: NextRequest) {
+  console.log("🔵 [API] Analysis request received");
   try {
     // Parse body
     let body: { pair?: string; images?: string[] };
     try {
       body = await request.json();
-    } catch {
+      console.log("🔵 [API] Request parsed successfully");
+    } catch (parseError) {
+      console.error("❌ [API] Failed to parse request body:", parseError);
       return Response.json(
         { success: false, error: "Invalid JSON body" } satisfies AnalyzeResponse,
         { status: 400 }
@@ -45,6 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { pair, images } = body;
+    console.log(`🔵 [API] Pair: ${pair}, Images: ${images?.length || 0}`);
 
     // Validate pair
     if (!pair || typeof pair !== "string" || !isValidPair(pair)) {
@@ -102,10 +106,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Call Anthropic Claude
+    console.log("🔵 [API] Getting Anthropic client...");
     const client = getAnthropicClient();
+    console.log("🔵 [API] Building prompts...");
     const systemPrompt = buildSystemPrompt(pair);
     const userPrompt = buildUserPrompt(pair);
 
+    console.log("🔵 [API] Preparing image contents...");
     const imageContents = images.map((b64, idx) => {
       const labels = ["1-Day (Daily)", "1-Hour", "5-Minute"];
       return [
@@ -124,6 +131,10 @@ export async function POST(request: NextRequest) {
       ];
     });
 
+    console.log("🔵 [API] Calling Claude 4 Opus API...");
+    console.log(`🔵 [API] Model: claude-opus-4-7, Max tokens: 4096`);
+    const startTime = Date.now();
+    
     const response = await client.messages.create({
       model: "claude-opus-4-7",
       max_tokens: 4096,
@@ -138,6 +149,9 @@ export async function POST(request: NextRequest) {
         },
       ],
     });
+
+    const duration = Date.now() - startTime;
+    console.log(`✅ [API] Claude responded in ${duration}ms`);
 
     // Extract text response
     const textBlock = response.content.find((block) => block.type === "text");
@@ -213,41 +227,72 @@ export async function POST(request: NextRequest) {
       data: analysisData,
     } satisfies AnalyzeResponse);
   } catch (err) {
-    console.error("Analysis API error:", err);
+    console.error("❌ [API] Analysis API error:", err);
+    console.error("❌ [API] Error type:", typeof err);
+    console.error("❌ [API] Error constructor:", err?.constructor?.name);
+    
+    // Log full error details
+    if (err && typeof err === 'object') {
+      console.error("❌ [API] Error keys:", Object.keys(err));
+      console.error("❌ [API] Error details:", JSON.stringify(err, null, 2));
+    }
+    
     Sentry.captureException(err);
 
     const message =
       err instanceof Error ? err.message : "Unknown error occurred";
+    const statusCode = (err as any)?.status || (err as any)?.statusCode || 500;
+    
+    console.error(`❌ [API] Error message: ${message}`);
+    console.error(`❌ [API] Status code: ${statusCode}`);
 
     // Check for API key issues
     if (message.includes("401") || message.includes("authentication") || message.includes("API key")) {
+      console.error("❌ [API] Authentication error detected");
       return Response.json(
         {
           success: false,
           error: "API authentication failed. Please check your Anthropic API key is correctly set in environment variables.",
           raw: message,
+          debug: {
+            errorType: err?.constructor?.name,
+            statusCode,
+            fullError: String(err),
+          }
         } satisfies AnalyzeResponse,
         { status: 500 }
       );
     }
 
     if (message.includes("timeout") || message.includes("ETIMEDOUT")) {
+      console.error("❌ [API] Timeout error detected");
       return Response.json(
         {
           success: false,
           error:
             "Analysis timed out. The AI model took too long to respond. Please try again.",
+          debug: {
+            errorType: err?.constructor?.name,
+            statusCode,
+          }
         } satisfies AnalyzeResponse,
         { status: 504 }
       );
     }
 
     // Return detailed error for debugging
+    console.error("❌ [API] Returning generic error response");
     return Response.json(
       {
         success: false,
         error: `Analysis failed: ${message}`,
         raw: err instanceof Error ? err.stack : String(err),
+        debug: {
+          errorType: err?.constructor?.name,
+          statusCode,
+          message,
+          keys: err && typeof err === 'object' ? Object.keys(err) : [],
+        }
       } satisfies AnalyzeResponse,
       { status: 500 }
     );

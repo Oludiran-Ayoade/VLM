@@ -56,6 +56,13 @@ export interface AnalyzeResponse {
   data?: AnalysisResult;
   error?: string;
   raw?: string;
+  debug?: {
+    errorType?: string;
+    statusCode?: number;
+    message?: string;
+    keys?: string[];
+    fullError?: string;
+  };
 }
 
 export interface TimeframeConfig {
