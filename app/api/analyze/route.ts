@@ -135,7 +135,12 @@ export async function POST(request: NextRequest) {
     console.log(`🔵 [API] Model: claude-opus-4-7, Max tokens: 4096`);
     const startTime = Date.now();
     
-    const response = await client.messages.create({
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Claude API timeout after 50 seconds')), 50000);
+    });
+    
+    const apiPromise = client.messages.create({
       model: "claude-opus-4-7",
       max_tokens: 4096,
       system: systemPrompt,
@@ -149,6 +154,8 @@ export async function POST(request: NextRequest) {
         },
       ],
     });
+
+    const response = await Promise.race([apiPromise, timeoutPromise]);
 
     const duration = Date.now() - startTime;
     console.log(`✅ [API] Claude responded in ${duration}ms`);

@@ -5,5 +5,9 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[functions]
+  # Increase timeout for AI analysis (default is 10s, we need more for Claude vision)
+  timeout = 60
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
