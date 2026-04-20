@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("🔵 [API] Calling Claude 4 Opus API...");
-    console.log(`🔵 [API] Model: claude-opus-4-7, Max tokens: 4096`);
+    console.log(`🔵 [API] Model: claude-opus-4-7, Max tokens: 2048 (reduced for Netlify timeout)`);
     const startTime = Date.now();
     
     // Add timeout to prevent hanging
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
     
     const apiPromise = client.messages.create({
       model: "claude-opus-4-7",
-      max_tokens: 4096,
+      max_tokens: 2048, // Reduced from 4096 to speed up response for Netlify 10s timeout
       system: systemPrompt,
       messages: [
         {
