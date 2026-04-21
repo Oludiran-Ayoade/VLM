@@ -132,17 +132,13 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("🔵 [API] Calling Claude 4 Opus API...");
-    console.log(`🔵 [API] Model: claude-opus-4-7, Max tokens: 2048 (reduced for Netlify timeout)`);
+    console.log(`🔵 [API] Model: claude-opus-4-7, Max tokens: 4096`);
     const startTime = Date.now();
     
-    // Add timeout to prevent hanging
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Claude API timeout after 50 seconds')), 50000);
-    });
-    
-    const apiPromise = client.messages.create({
+    // No timeout - Render allows unlimited execution time
+    const response = await client.messages.create({
       model: "claude-opus-4-7",
-      max_tokens: 2048, // Reduced from 4096 to speed up response for Netlify 10s timeout
+      max_tokens: 4096,
       system: systemPrompt,
       messages: [
         {
@@ -154,8 +150,6 @@ export async function POST(request: NextRequest) {
         },
       ],
     });
-
-    const response = await Promise.race([apiPromise, timeoutPromise]);
 
     const duration = Date.now() - startTime;
     console.log(`✅ [API] Claude responded in ${duration}ms`);
